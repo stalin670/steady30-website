@@ -190,10 +190,24 @@ See `../Steady30/AGENTS.md` for the full set.
 
 ## Deployment
 
-Vercel, from this repository. No framework preset needed beyond Next.js defaults.
+Vercel, from this repository.
+
+`vercel.json` pins the framework to `nextjs`. This matters because the project was
+originally created for the static HTML site, so its Framework Preset was "Other" —
+which makes Vercel look for a `public/` directory and fail with:
+
+> No Output Directory named "public" found after the Build completed.
+
+Next.js builds to `.next`, not `public/`. If a deploy still fails after this file
+lands, the dashboard has an explicit **Output Directory** override that needs
+clearing: Project Settings → Build & Deployment → Output Directory → clear the
+override, and set Framework Preset to Next.js. Leave Output Directory blank —
+Next.js deployments on Vercel should not set it.
+
 Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in project settings —
 staging until the adversarial RLS scenarios in `../Steady30/README.md` have been run
-against a real Postgres instance.
+against a real Postgres instance. Without them the public pages still render and
+`/sign-in` shows a "not configured" state; nobody can sign in.
 
 The policy copy is an operational draft based on the app's current behaviour, not legal
 advice. Have it reviewed before a production launch.
