@@ -55,7 +55,8 @@ export const GuidesConsole = ({
     const { error: rpcError } = await createClient().rpc('admin_review_peer_guide', {
       p_user_id: pending.userId,
       p_action: pending.action,
-      p_reason_code: reason
+      // The parameter is p_reason here, unlike the cohort RPCs' p_reason_code.
+      p_reason: reason
     });
 
     setBusy(false);

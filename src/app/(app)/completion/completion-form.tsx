@@ -51,6 +51,8 @@ export const CompletionForm = ({ state }: { state: CompletionState }) => {
 
     try {
       const { error: rpcError } = await createClient().rpc('save_completion_reflection', {
+        // The reflection is scoped to the attempt it closes.
+        p_attempt_id: state.completed_attempt.id,
         p_helpful_practices: practices,
         p_private_note: note.trim() || null,
         p_next_step: nextStep,
@@ -173,10 +175,9 @@ export const MaintenanceCheckIn = ({ state }: { state: CompletionState }) => {
           loading={saving}
           onClick={() =>
             run(() =>
-              createClient().rpc('set_maintenance_enabled', {
-                p_enabled: true,
-                p_cadence: 'weekly'
-              })
+              // Takes p_enabled only — cadence is set by the completion
+              // reflection, not by toggling maintenance on.
+              createClient().rpc('set_maintenance_enabled', { p_enabled: true })
             )
           }
         >
@@ -254,10 +255,7 @@ export const MaintenanceCheckIn = ({ state }: { state: CompletionState }) => {
         type="button"
         onClick={() =>
           run(() =>
-            createClient().rpc('set_maintenance_enabled', {
-              p_enabled: false,
-              p_cadence: state.maintenance_preference?.cadence ?? 'weekly'
-            })
+            createClient().rpc('set_maintenance_enabled', { p_enabled: false })
           )
         }
         className="self-start text-[13px] text-muted underline underline-offset-[3px] hover:text-ink"
