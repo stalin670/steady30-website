@@ -1,0 +1,201 @@
+@import 'tailwindcss';
+
+/* Dark is driven by data-theme on <html>, set before paint by the inline script in
+   layout.tsx. The media query only supplies the default value of that attribute. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ── tokens ────────────────────────────────────────────────────────────────
+   Ported verbatim from ../Steady30/src/theme/colors.ts. Do not invent values
+   here: the app is the source of truth and the two must not drift. Colour
+   appears only where meaning requires it — danger for resets and deletion,
+   warning for a deadline. Everything else is greyscale. */
+:root {
+  --bg: #f1f1ed;
+  --card: #fafaf7;
+  --card-hover: #e6e6e1;
+  --border: #d2d2cc;
+  --border-strong: #b8b8b1;
+  --text: #181818;
+  --text-muted: #5f5f5b;
+  --text-subtle: #85857f;
+  --primary: #181818;
+  --primary-hover: #000000;
+  --primary-muted: #deded9;
+  --on-primary: #ffffff;
+  --accent: #555550;
+  --accent-muted: #e2e2dd;
+  --on-accent: #ffffff;
+  --danger: #9d3f39;
+  --danger-muted: #f2dad7;
+  --on-danger: #ffffff;
+  --warning: #765b22;
+  --warning-muted: #ece3cd;
+  --input-bg: #fafaf7;
+}
+
+:root[data-theme='dark'] {
+  --bg: #101010;
+  --card: #1d1d1d;
+  --card-hover: #292929;
+  --border: #363636;
+  --border-strong: #4a4a4a;
+  --text: #f2f2ee;
+  --text-muted: #aaaaa5;
+  --text-subtle: #777773;
+  --primary: #f2f2ee;
+  --primary-hover: #ffffff;
+  --primary-muted: rgb(242 242 238 / 0.12);
+  --on-primary: #111111;
+  --accent: #afafa9;
+  --accent-muted: rgb(175 175 169 / 0.14);
+  --on-accent: #111111;
+  --danger: #e06e66;
+  --danger-muted: rgb(224 110 102 / 0.16);
+  --on-danger: #200706;
+  --warning: #c6a15b;
+  --warning-muted: rgb(198 161 91 / 0.16);
+  --input-bg: #171717;
+}
+
+/* `inline` keeps the utilities pointing at the live custom property, so a
+   data-theme flip re-themes the page without regenerating any classes. */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-card-hover: var(--card-hover);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-ink: var(--text);
+  --color-muted: var(--text-muted);
+  --color-subtle: var(--text-subtle);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-muted: var(--primary-muted);
+  --color-on-primary: var(--on-primary);
+  --color-accent: var(--accent);
+  --color-accent-muted: var(--accent-muted);
+  --color-on-accent: var(--on-accent);
+  --color-danger: var(--danger);
+  --color-danger-muted: var(--danger-muted);
+  --color-on-danger: var(--on-danger);
+  --color-warning: var(--warning);
+  --color-warning-muted: var(--warning-muted);
+  --color-input: var(--input-bg);
+
+  /* ../Steady30/src/theme/radius.ts */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  --font-sans:
+    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* The app sets -0.035em tracking and 1.2 leading on every heading. */
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.035em;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  /* Streaks, ranks, countdowns and day numbers must never shift width. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  ::selection {
+    background: var(--primary-muted);
+  }
+
+  /* Interactive surfaces settle rather than snap. Fast enough not to feel laggy,
+     slow enough not to feel twitchy on a screen someone opens under stress. */
+  a,
+  button,
+  select,
+  [role='checkbox'],
+  [role='radio'] {
+    transition:
+      background-color 120ms ease,
+      border-color 120ms ease,
+      color 120ms ease;
+  }
+
+  button:not(:disabled),
+  [role='checkbox'],
+  [role='radio'] {
+    cursor: pointer;
+  }
+
+  /* Long reflections and lesson bodies read better with real hyphenation. */
+  p {
+    text-wrap: pretty;
+  }
+
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+@layer components {
+  /* Keyboard users land here first, before the tab rail. */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 50;
+    padding: 12px 20px;
+    background: var(--primary);
+    color: var(--on-primary);
+    border-radius: 0 0 var(--radius-md) 0;
+    font-weight: 700;
+  }
+
+  .skip-link:focus {
+    left: 0;
+  }
+
+  /* iPhone home indicator sits on top of the bottom tab bar without this. */
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
