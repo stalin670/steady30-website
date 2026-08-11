@@ -52,6 +52,15 @@ export const CommunityFeed = ({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [posts, setPosts] = useState(initialPosts);
+  const [trackedPosts, setTrackedPosts] = useState(initialPosts);
+
+  // The stage filter pushes a new URL, the server re-renders, and this component
+  // receives new initialPosts — but useState would keep the first value forever
+  // and the feed would silently show the wrong stage. Adjust during render.
+  if (trackedPosts !== initialPosts) {
+    setTrackedPosts(initialPosts);
+    setPosts(initialPosts);
+  }
   const [composerOpen, setComposerOpen] = useState(false);
   const [body, setBody] = useState('');
   const [postStage, setPostStage] = useState<CommunityStage | ''>('');
@@ -144,11 +153,15 @@ export const CommunityFeed = ({
     });
 
     setReporting(null);
-    setNotice(
-      rpcError
-        ? formatErrorMessage(rpcError)
-        : 'Report submitted. A human moderator reviews every report.'
-    );
+
+    // A failed report must not render inside a success banner — someone would
+    // walk away believing they had reported something they had not.
+    if (rpcError) {
+      setError(formatErrorMessage(rpcError));
+      return;
+    }
+
+    setNotice('Report submitted. A human moderator reviews every report.');
   };
 
   return (
@@ -177,6 +190,9 @@ export const CommunityFeed = ({
         </Link>
       </div>
 
+      {/* One place for both composer and report failures — a report error raised
+          while the composer is closed must still be visible. */}
+      {error ? <Banner variant="danger">{error}</Banner> : null}
       {notice ? <Banner variant="success">{notice}</Banner> : null}
 
       {composerOpen ? (
@@ -187,7 +203,6 @@ export const CommunityFeed = ({
             can cost you access.
           </Helper>
           <form onSubmit={publish} className="flex flex-col gap-4">
-            {error ? <Banner variant="danger">{error}</Banner> : null}
             <TextArea
               id="post-body"
               label="Your post"
