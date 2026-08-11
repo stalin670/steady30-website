@@ -2,13 +2,11 @@ import Link from 'next/link';
 import { ThemeToggle } from './theme-toggle';
 
 export const Wordmark = ({ href = '/' }: { href?: string }) => (
-  <Link href={href} className="flex items-center gap-2.5 text-[20px] font-extrabold tracking-[-0.5px]">
-    <span
-      aria-hidden="true"
-      className="grid size-7 place-items-center rounded-full border-2 border-current text-[15px] leading-none"
-    >
-      S
-    </span>
+  <Link
+    href={href}
+    className="flex items-center gap-2.5 text-[20px] font-extrabold tracking-[-0.5px]"
+  >
+    <span aria-hidden="true" className="steady30-mark" />
     Steady30
   </Link>
 );

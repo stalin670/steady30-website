@@ -163,6 +163,24 @@
 }
 
 @layer components {
+  /*
+   * The Steady30 mark, taken from the app's monochrome adaptive icon
+   * (../Steady30/assets/adaptive-icon-monochrome.png) with the Android safe-zone
+   * padding cropped off.
+   *
+   * Painted as a mask rather than an <img> so it inherits currentColor: the mark
+   * is ink on paper in light and paper on ink in dark, exactly like the app,
+   * from one asset and with no second file to keep in sync.
+   */
+  .steady30-mark {
+    display: block;
+    height: 1.45em;
+    aspect-ratio: 447 / 658;
+    background-color: currentColor;
+    -webkit-mask: url('/steady30-mark.png') center / contain no-repeat;
+    mask: url('/steady30-mark.png') center / contain no-repeat;
+  }
+
   /* Keyboard users land here first, before the tab rail. */
   .skip-link {
     position: absolute;
