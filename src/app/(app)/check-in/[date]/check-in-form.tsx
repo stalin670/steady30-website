@@ -9,7 +9,6 @@ import {
   CardTitle,
   Checkbox,
   ChipGroup,
-  Helper,
   TextArea
 } from '@/components/ui';
 import { createClient } from '@/lib/supabase/client';
@@ -42,7 +41,9 @@ const Rating = ({
 }) => (
   <fieldset className="flex flex-col gap-3">
     <legend className="mb-2 text-[15px] font-bold">{label}</legend>
-    <div className="flex flex-wrap gap-1.5">
+    {/* role="radio" is only meaningful inside a radiogroup — without this the
+        options are announced as loose buttons. */}
+    <div role="radiogroup" aria-label={label} className="flex flex-wrap gap-1.5">
       {Array.from({ length: max - min + 1 }, (_, index) => index + min).map((option) => (
         <button
           key={option}

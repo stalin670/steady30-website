@@ -23,7 +23,7 @@ const Guides = async () => {
       <Card tone="tint">
         <CardTitle>What approval means</CardTitle>
         <Helper>
-          An approved guide's statement becomes public and they get a badge beside their handle.
+          An approved guide’s statement becomes public and they get a badge beside their handle.
           They are volunteers, not clinicians — approve people who sound steady and boundaried, not
           people who sound like they want to counsel.
         </Helper>

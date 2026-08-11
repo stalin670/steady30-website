@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { PLAY_STORE_URL, SiteShell } from '@/components/site-chrome';
+import { SiteShell } from '@/components/site-chrome';
 import { createClient } from '@/lib/supabase/server';
 
 // The landing page decides whether to redirect a signed-in member to /today, so it

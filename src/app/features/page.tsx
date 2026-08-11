@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { PLAY_STORE_URL, SiteShell } from '@/components/site-chrome';
+import { SiteShell } from '@/components/site-chrome';
 
 export const metadata: Metadata = {
   title: 'Features',

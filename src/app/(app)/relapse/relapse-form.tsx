@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
-import { Banner, Button, Card, CardTitle, Checkbox, Helper, TextArea } from '@/components/ui';
+import { Banner, Button, Card, CardTitle, Checkbox, TextArea } from '@/components/ui';
 import { createClient } from '@/lib/supabase/client';
 import { formatErrorMessage } from '@/lib/core/errors';
 import { createIdempotencyKey } from '@/lib/core/idempotency';
