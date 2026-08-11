@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { SiteShell } from '@/components/site-chrome';
 import { Banner, Card, CardTitle, FormScreen, Helper, ScreenHeader } from '@/components/ui';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, supabaseEnv } from '@/lib/supabase/server';
 import { SignInForm } from './sign-in-form';
 
 export const metadata: Metadata = {
@@ -12,9 +12,34 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false }
 };
 
+/**
+ * Which providers this project actually has switched on.
+ *
+ * /auth/v1/settings is a public endpoint. Asking it means we never render a
+ * "Continue with Google" button that can only answer "provider is not enabled" —
+ * the sign-in page shows what genuinely works right now.
+ */
+const enabledProviders = async () => {
+  const env = supabaseEnv();
+  if (!env) return { google: false };
+
+  try {
+    const response = await fetch(`${env.url}/auth/v1/settings`, {
+      headers: { apikey: env.key },
+      next: { revalidate: 300 }
+    });
+    if (!response.ok) return { google: false };
+    const settings = (await response.json()) as { external?: Record<string, boolean> };
+    return { google: settings.external?.google === true };
+  } catch {
+    return { google: false };
+  }
+};
+
 const SignIn = async ({ searchParams }: { searchParams: Promise<{ error?: string }> }) => {
   const { error } = await searchParams;
   const supabase = await createClient();
+  const providers = await enabledProviders();
 
   if (supabase) {
     const {
@@ -31,7 +56,7 @@ const SignIn = async ({ searchParams }: { searchParams: Promise<{ error?: string
         {error ? <Banner variant="danger">{error}</Banner> : null}
 
         {supabase ? (
-          <SignInForm />
+          <SignInForm googleEnabled={providers.google} />
         ) : (
           <Card>
             <CardTitle>Sign-in is not configured on this environment</CardTitle>

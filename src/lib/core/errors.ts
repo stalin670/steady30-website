@@ -4,6 +4,8 @@
 
 export const ERROR_MESSAGES: Record<string, string> = {
   AUTH_REQUIRED: 'Please sign in to perform this action.',
+  'provider is not enabled':
+    'That sign-in method is not available yet. Use your email address instead.',
   DUPLICATE_ACCOUNT_EMAIL:
     'You already have a Steady30 account with this email address. Sign in with the method you used the first time to keep your streak and history.',
   UNAUTHORIZED: 'This action is unavailable.',

@@ -6,7 +6,7 @@ import { Banner, Button, Card, Helper, Input } from '@/components/ui';
 import { createClient } from '@/lib/supabase/client';
 import { formatErrorMessage } from '@/lib/core/errors';
 
-export const SignInForm = () => {
+export const SignInForm = ({ googleEnabled }: { googleEnabled: boolean }) => {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [sendingOtp, setSendingOtp] = useState(false);
@@ -95,15 +95,25 @@ export const SignInForm = () => {
           </Button>
         </form>
 
-        <div className="flex items-center gap-4 text-[13px] text-subtle">
-          <span className="h-px flex-1 bg-[var(--border)]" />
-          or
-          <span className="h-px flex-1 bg-[var(--border)]" />
-        </div>
+        {googleEnabled ? (
+          <>
+            <div className="flex items-center gap-4 text-[13px] text-subtle">
+              <span className="h-px flex-1 bg-[var(--border)]" />
+              or
+              <span className="h-px flex-1 bg-[var(--border)]" />
+            </div>
 
-        <Button type="button" variant="outline" loading={sendingGoogle} onClick={handleGoogle} full>
-          Continue with Google
-        </Button>
+            <Button
+              type="button"
+              variant="outline"
+              loading={sendingGoogle}
+              onClick={handleGoogle}
+              full
+            >
+              Continue with Google
+            </Button>
+          </>
+        ) : null}
       </Card>
     </>
   );
