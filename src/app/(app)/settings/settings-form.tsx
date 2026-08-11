@@ -151,7 +151,11 @@ export const TimezoneCard = ({ current }: { current: string }) => {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
+    // Reading the browser's timezone is a genuine mount-time sync with an
+    // external system: it is unavailable during SSR, and rendering the banner
+    // during render would produce a hydration mismatch.
     const detected = detectTimezone();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (detected && detected !== current) setBrowserZone(detected);
   }, [current]);
 
@@ -236,11 +240,14 @@ export const ThemeCard = () => {
   const [theme, setTheme] = useState<Theme>('system');
 
   useEffect(() => {
+    // localStorage is unavailable during SSR, so the stored preference can only
+    // be read after mount. Same reasoning as the timezone banner above.
     try {
       const stored = localStorage.getItem('steady30-theme');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTheme(stored === 'dark' || stored === 'light' ? stored : 'system');
     } catch {
-      setTheme('system');
+      // Storage blocked; 'system' is already the initial value.
     }
   }, []);
 

@@ -12,10 +12,16 @@ import { getRemainingTime } from '@/lib/core/date';
 export const Countdown = ({ deadlineAt }: { deadlineAt: string }) => {
   const router = useRouter();
   const [remaining, setRemaining] = useState(() => getRemainingTime(deadlineAt));
+  const [tracked, setTracked] = useState(deadlineAt);
+
+  // Adjusting state during render rather than in an effect: a new deadline must
+  // take effect on this paint, not one cascading render later.
+  if (tracked !== deadlineAt) {
+    setTracked(deadlineAt);
+    setRemaining(getRemainingTime(deadlineAt));
+  }
 
   useEffect(() => {
-    setRemaining(getRemainingTime(deadlineAt));
-
     const timer = setInterval(() => {
       const next = getRemainingTime(deadlineAt);
       setRemaining(next);
