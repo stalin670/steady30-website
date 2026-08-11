@@ -47,13 +47,15 @@ const Rating = ({
 }) => (
   <fieldset className="flex flex-col gap-3">
     <legend className="font-bold">{label}</legend>
-    <div className="flex flex-wrap gap-1.5">
+    {/* Mutually exclusive options: a radiogroup, not a row of toggle buttons. */}
+    <div role="radiogroup" aria-label={label} className="flex flex-wrap gap-1.5">
       {Array.from({ length: 11 }, (_, index) => (
         <button
           key={index}
           type="button"
+          role="radio"
           onClick={() => onChange(index)}
-          aria-pressed={value === index}
+          aria-checked={value === index}
           className={`tnum min-w-11 flex-1 rounded-md border py-2 text-sm ${
             value === index
               ? 'border-primary bg-primary font-bold text-on-primary'
