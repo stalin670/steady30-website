@@ -37,7 +37,24 @@ const steps = [
   }
 ];
 
-const Home = async () => {
+const Home = async ({
+  searchParams
+}: {
+  searchParams: Promise<{ error?: string; error_code?: string; error_description?: string }>;
+}) => {
+  const params = await searchParams;
+
+  // Supabase sends failed sign-in links to the project's Site URL, not to
+  // /auth/callback. Landing silently on the marketing page tells someone whose
+  // link expired nothing at all, so carry the reason to sign-in instead.
+  if (params.error || params.error_code) {
+    const reason =
+      params.error_code === 'otp_expired'
+        ? 'That sign-in link has expired or was already used. Request a new one.'
+        : (params.error_description ?? 'Sign-in did not complete. Please try again.');
+    redirect(`/sign-in?error=${encodeURIComponent(reason)}`);
+  }
+
   // Mirrors ../Steady30/src/app/index.tsx: a member with a handle goes straight to
   // Today; a member without one still needs onboarding.
   const supabase = await createClient();
