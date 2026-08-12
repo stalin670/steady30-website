@@ -97,6 +97,7 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 18px;
   }
 
   body {
@@ -142,6 +143,16 @@
       background-color 120ms ease,
       border-color 120ms ease,
       color 120ms ease;
+  }
+
+  a,
+  button,
+  summary {
+    touch-action: manipulation;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
   }
 
   button:not(:disabled),
