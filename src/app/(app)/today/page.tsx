@@ -254,7 +254,7 @@ const Today = async () => {
         </Card>
       ) : null}
 
-      <div className="flex justify-center pt-2 pb-4">
+      <div className="flex justify-center pt-2 pb-4 lg:hidden">
         <Link
           href="/relapse"
           className="text-center text-[13px] font-semibold text-danger underline underline-offset-[3px]"

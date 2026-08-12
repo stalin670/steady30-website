@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Wordmark } from '@/components/site-chrome';
+import { Wordmark } from '@/components/wordmark';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { requireStaff } from '@/lib/session';
 

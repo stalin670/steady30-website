@@ -1,15 +1,7 @@
 import Link from 'next/link';
 import { ThemeToggle } from './theme-toggle';
-
-export const Wordmark = ({ href = '/' }: { href?: string }) => (
-  <Link
-    href={href}
-    className="flex items-center gap-2.5 text-[20px] font-extrabold tracking-[-0.5px]"
-  >
-    <span aria-hidden="true" className="steady30-mark" />
-    Steady30
-  </Link>
-);
+import { createClient } from '@/lib/supabase/server';
+import { Wordmark } from './wordmark';
 
 const navLinks = [
   { href: '/features', label: 'Features' },
@@ -21,6 +13,22 @@ const navLinks = [
 export const PLAY_STORE_URL =
   process.env.NEXT_PUBLIC_PLAY_STORE_URL ??
   'https://play.google.com/store/apps/details?id=com.steady30.app';
+
+const ProfileButton = ({ compact = false }: { compact?: boolean }) => (
+  <Link
+    href="/me"
+    aria-label="Open profile"
+    title="Open profile"
+    className={`inline-flex items-center justify-center rounded-full border border-line-strong text-ink hover:bg-card-hover ${
+      compact ? 'size-11' : 'size-10'
+    }`}
+  >
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="size-5 fill-none stroke-current stroke-[1.8]">
+      <circle cx="12" cy="8" r="3.25" />
+      <path d="M5.5 20c.7-3.2 3-5 6.5-5s5.8 1.8 6.5 5" />
+    </svg>
+  </Link>
+);
 
 export const SiteHeader = ({ signedIn = false }: { signedIn?: boolean }) => (
   <header className="relative border-b border-line">
@@ -36,21 +44,29 @@ export const SiteHeader = ({ signedIn = false }: { signedIn?: boolean }) => (
           </Link>
         ))}
         <ThemeToggle />
-        <Link
-          href={signedIn ? '/today' : '/sign-in'}
-          className="inline-flex min-h-9 items-center justify-center rounded-full bg-primary px-4 font-bold text-on-primary hover:bg-primary-hover"
-        >
-          {signedIn ? 'Open Steady30' : 'Sign in'}
-        </Link>
+        {signedIn ? (
+          <ProfileButton />
+        ) : (
+          <Link
+            href="/sign-in"
+            className="inline-flex min-h-9 items-center justify-center rounded-full bg-primary px-4 font-bold text-on-primary hover:bg-primary-hover"
+          >
+            Sign in
+          </Link>
+        )}
       </nav>
 
       <div className="flex items-center gap-2 sm:hidden">
-        <Link
-          href={signedIn ? '/today' : '/sign-in'}
-          className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-4 text-[14px] font-bold text-on-primary"
-        >
-          {signedIn ? 'Open app' : 'Start'}
-        </Link>
+        {signedIn ? (
+          <ProfileButton compact />
+        ) : (
+          <Link
+            href="/sign-in"
+            className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-4 text-[14px] font-bold text-on-primary"
+          >
+            Start
+          </Link>
+        )}
         <details className="group relative">
           <summary className="flex size-11 list-none items-center justify-center rounded-full border border-line-strong text-[20px] font-bold marker:content-none hover:bg-card-hover">
             <span className="sr-only">Open menu</span>
@@ -115,21 +131,37 @@ export const SiteFooter = () => (
 );
 
 /** Page shell for the public marketing and legal surface. */
-export const SiteShell = ({
+export const SiteShell = async ({
   children,
-  signedIn = false
+  signedIn
 }: {
   children: React.ReactNode;
   signedIn?: boolean;
-}) => (
-  <div className="flex min-h-dvh flex-col">
-    <a href="#main" className="skip-link">
-      Skip to content
-    </a>
-    <SiteHeader signedIn={signedIn} />
-    <main id="main" className="flex-1">
-      {children}
-    </main>
-    <SiteFooter />
-  </div>
-);
+}) => {
+  let hasSession = signedIn;
+
+  if (hasSession === undefined) {
+    const supabase = await createClient();
+    if (supabase) {
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+      hasSession = Boolean(user);
+    } else {
+      hasSession = false;
+    }
+  }
+
+  return (
+    <div className="flex min-h-dvh flex-col">
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
+      <SiteHeader signedIn={hasSession} />
+      <main id="main" className="flex-1">
+        {children}
+      </main>
+      <SiteFooter />
+    </div>
+  );
+};

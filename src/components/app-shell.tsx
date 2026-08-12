@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Wordmark } from './site-chrome';
+import { Wordmark } from './wordmark';
 import { ThemeToggle } from './theme-toggle';
 import { createClient } from '@/lib/supabase/client';
 
@@ -67,6 +67,20 @@ export const AppShell = ({ children }: { children: React.ReactNode }) => {
             {tab.label}
           </Link>
         ))}
+
+        {/* A reset is an intentional action, not a hidden error state. Keep it in
+            the desktop rail so it is available without taking over Today. */}
+        <Link
+          href="/relapse"
+          aria-current={isActive('/relapse') ? 'page' : undefined}
+          className={`mt-3 rounded-[10px] px-3 py-2 text-[14px] font-semibold ${
+            isActive('/relapse')
+              ? 'bg-danger-muted text-danger'
+              : 'text-danger hover:bg-danger-muted'
+          }`}
+        >
+          Record an honest reset
+        </Link>
 
         <div className="flex-1" />
 
